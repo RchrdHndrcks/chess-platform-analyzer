@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/RchrdHndrcks/chess-analyzer/internal"
+	"chess-platform-analyzer/internal"
 )
 
 func main() {
@@ -14,6 +14,12 @@ func main() {
 	daysAgo := 5
 
 	p := internal.LichessPlatform{}
+	games, err := p.GetGamesFromManyDays(user, daysAgo)
+	if err != nil {
+		fmt.Printf("error calling GetGamesFromManyDays: %s", err)
+		return
+	}
 
+	fmt.Println(games)
 	fmt.Println("Delayed time:", time.Now().Sub(start))
 }
