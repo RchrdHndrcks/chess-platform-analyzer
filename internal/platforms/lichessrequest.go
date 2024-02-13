@@ -8,13 +8,13 @@ import (
 )
 
 type (
-	LichessPlatform struct{}
+	lichessPlatform struct{}
 )
 
 const url string = "https://lichess.org/api/games/user/%s?since=%d&perfType=blitz,rapid,classical"
 
 func NewLichessPlatform() ChessPlatform {
-	return LichessPlatform{}
+	return lichessPlatform{}
 }
 
 // GetGamesFromManyDays
@@ -23,7 +23,7 @@ func NewLichessPlatform() ChessPlatform {
 // This function make a POST request to Lichess API looking for user games.
 // After request the function return user games as string.
 // Function return error if request or read response failed.
-func (p LichessPlatform) GetGamesFromManyDays(user string, daysAgo int) (string, error) {
+func (lichessPlatform) GetGamesFromManyDays(user string, daysAgo int) (string, error) {
 	response, err := makeLichessRequest(user, daysAgo)
 	if err != nil {
 		return "", fmt.Errorf("error calling makeLichessRequest: %s", err)
