@@ -4,19 +4,21 @@ import "strings"
 
 type (
 	PGN struct {
-		Event       string `json:"event"`
-		Site        string `json:"site"`
-		Date        string `json:"date"`
-		White       string `json:"white"`
-		Black       string `json:"black"`
-		Result      string `json:"result"`
-		Variant     string `json:"variant"`
-		TimeControl string `json:"time_control"`
-		ECO         string `json:"eco"`
-		Game        string `json:"game"`
+		Event                 string `json:"event"`
+		Site                  string `json:"site"`
+		Date                  string `json:"date"`
+		White                 string `json:"white"`
+		Black                 string `json:"black"`
+		Result                string `json:"result"`
+		Variant               string `json:"variant"`
+		TimeControl           string `json:"time_control"`
+		ECO                   string `json:"eco"`
+		GamePlainText         string `json:"game_plain_text"`
+		GameAlgebraicNotation string `json:"game_algebraic_notation"`
 	}
 )
 
+// parse a plain-text PGN to a slice of PGN struct
 func ParseStringGames(games string) []PGN {
 	var actualPGN PGN
 	var splitedGames []PGN
@@ -25,22 +27,22 @@ func ParseStringGames(games string) []PGN {
 
 	for _, v := range g {
 		v = strings.Trim(v, "\t")
-		if strings.HasPrefix(v, "[Event") && actualPGN.Game != "" {
+		if strings.HasPrefix(v, "[Event") && actualPGN.GamePlainText != "" {
 			splitedGames = append(splitedGames, actualPGN)
 			actualPGN = PGN{}
 		}
 
-		actualPGN.parseLine(v)
+		actualPGN.parsePlainTextPGNLine(v)
 	}
 
 	splitedGames = append(splitedGames, actualPGN)
 	return splitedGames
 }
 
-func (p *PGN) parseLine(line string) {
+func (p *PGN) parsePlainTextPGNLine(line string) {
 	l := strings.ReplaceAll(line, "\t", "")
 	if !strings.HasPrefix(l, "[") {
-		p.Game += l
+		p.GamePlainText += l
 		return
 	}
 
@@ -110,4 +112,13 @@ func lookAnyHeader(header string) (string, string) {
 	}
 
 	return "", ""
+}
+
+func (pgn *PGN) parsePlainTextGameToAlgebraicNotation() {
+	if pgn.GamePlainText == "" {
+		return
+	}
+
+	//normalizedGames := strings.ReplaceAll(pgn.GamePlainText, " ", "")
+
 }
