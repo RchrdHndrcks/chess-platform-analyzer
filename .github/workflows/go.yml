@@ -2,9 +2,10 @@ name: Go
 on: [pull_request]
 
 jobs:
-  build:
+  run-tests:
+    name: run-go-tests
     runs-on: ubuntu-latest
-
+  
     steps:
       - uses: actions/checkout@v4
       - name: Setup Go
