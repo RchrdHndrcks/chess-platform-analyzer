@@ -16,6 +16,7 @@ func Test_MakeMove(t *testing.T) {
 	assert.Equal(t, 1, board.MovesCount)
 	assert.Equal(t, "e3", board.InPasantSquare)
 	assert.Equal(t, "b", board.Turn)
+	assert.Equal(t, []string{"e2e4"}, board.MovesHistory)
 }
 
 func Test_AvailableLegalMoves_InitialPosition(t *testing.T) {
@@ -265,4 +266,5 @@ func Test_InitialPosition(t *testing.T) {
 	assert.Equal("-", b.InPasantSquare)
 	assert.Equal(0, b.HalfMoves)
 	assert.Equal(1, b.MovesCount)
+	assert.Len(b.MovesHistory, 0)
 }
