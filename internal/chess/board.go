@@ -15,6 +15,7 @@ type (
 		InPasantSquare   string
 		AvailableCastles string
 		IsCheck          bool
+		MovesHistory     []string
 	}
 )
 
@@ -47,6 +48,7 @@ func (board *Board) MakeMove(movement string) {
 	xOrigin, yOrigin := generateXYFromSquare(originSquare)
 	xTarget, yTarget := generateXYFromSquare(targetSquare)
 
+	board.MovesHistory = append(board.MovesHistory, movement)
 	board.move(xOrigin, yOrigin, xTarget, yTarget, Piece(coronationPiece))
 }
 
