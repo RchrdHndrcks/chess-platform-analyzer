@@ -136,9 +136,3 @@ func extractSquaresFromMovement(movement string) (string, string, string) {
 	}
 	return originSquare, targetSquare, coronationPiece
 }
-
-func copyBoard(b Board) Board {
-	c := Board{}
-	c.TranslateFEN(b.FEN())
-	return c
-}
