@@ -66,7 +66,7 @@ func (board Board) AvailableLegalMoves() []string {
 	for _, move := range availableMoves {
 		legalMove := true
 
-		boardPlayground := copyBoard(board)
+		boardPlayground := board.copyBoard()
 		boardPlayground.MakeMove(move)
 		opponentAvailableMoves := boardPlayground.availableMoves()
 		for _, opMove := range opponentAvailableMoves {
@@ -88,7 +88,7 @@ func (board Board) AvailableLegalMoves() []string {
 				break
 			}
 
-			boardPlayground = copyBoard(board)
+			boardPlayground = board.copyBoard()
 			boardPlayground.MakeMove(move)
 		}
 
@@ -551,7 +551,7 @@ func (board *Board) move(x, y, xTarget, yTarget int, coronationPiece Piece) {
 
 func (board Board) isCheck() bool {
 	king := WKing
-	b := copyBoard(board)
+	b := board.copyBoard()
 	b.Turn = "b"
 	if board.Turn == "b" {
 		b.Turn = "w"
@@ -580,4 +580,10 @@ func (Board) parseToAlgebraicNotation(game string) string {
 
 func (Board) isInsideLimit(x, y int) bool {
 	return x >= 0 && x < 8 && y >= 0 && y < 8
+}
+
+func (board Board) copyBoard() Board {
+	c := Board{}
+	c.TranslateFEN(board.FEN())
+	return c
 }
