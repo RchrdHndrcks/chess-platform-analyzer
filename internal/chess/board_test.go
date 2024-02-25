@@ -11,8 +11,8 @@ func Test_MakeMove(t *testing.T) {
 
 	board.MakeMove("e2e4")
 
-	assert.Equal(t, Piece(""), board.Board[6][4])
-	assert.Equal(t, Piece("P"), board.Board[4][4])
+	assert.Equal(t, Piece(""), board.board[6][4])
+	assert.Equal(t, Piece("P"), board.board[4][4])
 	assert.Equal(t, 1, board.MovesCount)
 	assert.Equal(t, "e3", board.InPasantSquare)
 	assert.Equal(t, "b", board.Turn)
@@ -26,7 +26,8 @@ func Test_MakeMove_Castle(t *testing.T) {
 	board.MakeMove("e1g1")
 
 	assert.Equal(t, []string{"e1g1"}, board.MovesHistory)
-	assert.Equal(t, []Piece{"", "", "", "", "", "R", "K", ""}, board.Board[7])
+	assert.Equal(t, Piece("K"), board.GetPieceAt("g1"))
+	assert.Equal(t, Piece("R"), board.GetPieceAt("f1"))
 	assert.Empty(t, board.AvailableCastles)
 }
 
@@ -210,7 +211,7 @@ func Test_availableMoves_PawnInPassant(t *testing.T) {
 
 func Test_FEN(t *testing.T) {
 	board := Board{
-		Board: [][]Piece{
+		board: [][]Piece{
 			{BRook, "", "", "", BRook, "", BKing, ""},
 			{BPawn, BPawn, "", "", "", BKnight, WPawn, BPawn},
 			{"", BBishop, "", BPawn, "", WBishop, "", ""},
@@ -249,7 +250,7 @@ func Test_TranslateFEN(t *testing.T) {
 		{WPawn, "", "", "", "", WQueen, "", ""},
 		{"", WPawn, "", "", "", WPawn, WKing, ""},
 		{WRook, "", "", "", "", "", "", WRook},
-	}, b.Board)
+	}, b.board)
 	assert.Equal("w", b.Turn)
 	assert.Equal("-", b.AvailableCastles)
 	assert.Equal("-", b.InPasantSquare)
@@ -271,7 +272,7 @@ func Test_InitialPosition(t *testing.T) {
 		{"", "", "", "", "", "", "", ""},
 		{WPawn, WPawn, WPawn, WPawn, WPawn, WPawn, WPawn, WPawn},
 		{WRook, WKnight, WBishop, WQueen, WKing, WBishop, WKnight, WRook},
-	}, b.Board)
+	}, b.board)
 	assert.Equal("w", b.Turn)
 	assert.Equal("KQkq", b.AvailableCastles)
 	assert.Equal("-", b.InPasantSquare)
