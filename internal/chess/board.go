@@ -50,6 +50,7 @@ func (board *Board) MakeMove(movement string) {
 
 	board.MovesHistory = append(board.MovesHistory, movement)
 	board.move(xOrigin, yOrigin, xTarget, yTarget, Piece(coronationPiece))
+	board.updateAvailableCastles()
 }
 
 // calculate all available legal moves for board.Turn color.
@@ -579,6 +580,32 @@ func (board Board) isCheck() bool {
 	}
 
 	return false
+}
+
+func (board *Board) updateAvailableCastles() {
+	if board.AvailableCastles == "" {
+		return
+	}
+
+	if board.Board[0][4] != BKing {
+		board.AvailableCastles = strings.Replace(board.AvailableCastles, "kq", "", 1)
+	}
+	if board.Board[7][4] != WKing {
+		board.AvailableCastles = strings.Replace(board.AvailableCastles, "KQ", "", 1)
+	}
+
+	if board.Board[0][0] != BRook {
+		board.AvailableCastles = strings.Replace(board.AvailableCastles, "q", "", 1)
+	}
+	if board.Board[7][0] != BRook {
+		board.AvailableCastles = strings.Replace(board.AvailableCastles, "k", "", 1)
+	}
+	if board.Board[0][7] != WRook {
+		board.AvailableCastles = strings.Replace(board.AvailableCastles, "Q", "", 1)
+	}
+	if board.Board[7][7] != WRook {
+		board.AvailableCastles = strings.Replace(board.AvailableCastles, "K", "", 1)
+	}
 }
 
 func (Board) parseToAlgebraicNotation(game string) string {

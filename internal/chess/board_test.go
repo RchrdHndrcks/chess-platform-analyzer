@@ -21,12 +21,13 @@ func Test_MakeMove(t *testing.T) {
 
 func Test_MakeMove_Castle(t *testing.T) {
 	board := Board{}
-	board.TranslateFEN("4r3/8/8/8/8/8/8/4K2R w K - 0 1")
+	board.TranslateFEN("4k3/8/8/8/8/8/8/4K2R w K - 0 1")
 
 	board.MakeMove("e1g1")
 
 	assert.Equal(t, []string{"e1g1"}, board.MovesHistory)
 	assert.Equal(t, []Piece{"", "", "", "", "", "R", "K", ""}, board.Board[7])
+	assert.Empty(t, board.AvailableCastles)
 }
 
 func Test_AvailableLegalMoves_InitialPosition(t *testing.T) {
