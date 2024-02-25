@@ -545,8 +545,16 @@ func (board *Board) move(x, y, xTarget, yTarget int, coronationPiece Piece) {
 		p = Piece(coronationPiece)
 	}
 
+	isCastleMove := isCastleMovement(p, generateSquare(x, y), generateSquare(xTarget, yTarget))
+
 	board.Board[y][x] = ""
 	board.Board[yTarget][xTarget] = p
+
+	if isCastleMove {
+		rX, rY, rXTarget, rYTarget := getCastleRookPosition(xTarget, yTarget)
+		board.Board[rYTarget][rXTarget] = board.Board[rY][rX]
+		board.Board[rY][rX] = ""
+	}
 }
 
 func (board Board) isCheck() bool {
