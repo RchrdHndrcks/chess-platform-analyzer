@@ -136,3 +136,23 @@ func extractSquaresFromMovement(movement string) (string, string, string) {
 	}
 	return originSquare, targetSquare, coronationPiece
 }
+
+func getCastleRookPosition(x, y int) (int, int, int, int) {
+	if x == 2 && y == 0 {
+		return 0, 0, 3, 0
+	}
+
+	if x == 2 && y == 7 {
+		return 0, 7, 3, 7
+	}
+
+	if x == 6 && y == 0 {
+		return 7, 0, 5, 0
+	}
+
+	if x == 6 && y == 7 {
+		return 7, 7, 5, 7
+	}
+
+	return -1, -1, -1, -1
+}
