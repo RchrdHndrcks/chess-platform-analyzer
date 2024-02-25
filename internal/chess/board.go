@@ -8,7 +8,7 @@ import (
 
 type (
 	Board struct {
-		Board            [][]Piece
+		board            [][]Piece
 		Turn             string
 		MovesCount       int
 		HalfMoves        int
@@ -83,7 +83,7 @@ func (board Board) AvailableLegalMoves() []string {
 
 			originSquare, targetSquare, _ := extractSquaresFromMovement(move)
 			x, y := generateXYFromSquare(originSquare)
-			if isCastleMovement(board.Board[y][x], originSquare, targetSquare) &&
+			if isCastleMovement(board.board[y][x], originSquare, targetSquare) &&
 				(board.isCheck() || targetSquareIsInKingWayInCastle(targetSquare)) {
 				legalMove = false
 				break
@@ -112,9 +112,9 @@ func (board Board) AvailableLegalMoves() []string {
 func (b Board) FEN() string {
 	fen := ""
 	emptySquares := 0
-	for i := range b.Board {
+	for i := range b.board {
 		f := ""
-		for _, square := range b.Board[i] {
+		for _, square := range b.board[i] {
 			if square == "" {
 				emptySquares++
 				continue
@@ -186,13 +186,13 @@ func (board *Board) TranslateFEN(FEN string) error {
 		}
 	}
 
-	board.Board = b
+	board.board = b
 	return nil
 }
 
 func (b Board) WhereIs(p Piece) []string {
 	squares := []string{}
-	for y, row := range b.Board {
+	for y, row := range b.board {
 		for x, piece := range row {
 			if piece != p {
 				continue
@@ -205,10 +205,15 @@ func (b Board) WhereIs(p Piece) []string {
 	return squares
 }
 
+func (b Board) GetPieceAt(square string) Piece {
+	x, y := generateXYFromSquare(square)
+	return b.board[y][x]
+}
+
 // give all possible moves (legal or not)
 func (b Board) availableMoves() []string {
 	moves := ""
-	for y, row := range b.Board {
+	for y, row := range b.board {
 		for x, piece := range row {
 			if piece == "" {
 				continue
@@ -254,7 +259,7 @@ func (b Board) availableMoves() []string {
 // generate different pieces special moves, except pawn transformation
 // because this move is not different to normal pawn movement
 func (board Board) generateSpecialMoves(x, y int) string {
-	piece := board.Board[y][x]
+	piece := board.board[y][x]
 
 	if (piece == WKing || piece == BKing) && board.AvailableCastles != "" {
 		return strings.Trim(board.possibleCastles(x, y), " ")
@@ -268,7 +273,7 @@ func (board Board) generateSpecialMoves(x, y int) string {
 }
 
 func (board Board) generatePawnMoves(x, y int) string {
-	pawn := board.Board[y][x]
+	pawn := board.board[y][x]
 
 	isWhiteColor := pawn.IsColor("w")
 
@@ -289,7 +294,7 @@ func (board Board) generatePawnMoves(x, y int) string {
 			break
 		}
 
-		target := board.Board[yTarget][x]
+		target := board.board[yTarget][x]
 		if target != "" {
 			break
 		}
@@ -315,7 +320,7 @@ func (board Board) generatePawnMoves(x, y int) string {
 	xTarget := x + 1
 	yTarget := y + yOffset
 	if board.isInsideLimit(xTarget, yTarget) {
-		targetCapture := board.Board[yTarget][xTarget]
+		targetCapture := board.board[yTarget][xTarget]
 		if targetCapture != "" && !targetCapture.AreSameColor(pawn) {
 			moves += generateTargetMovement(x, y, xTarget, yTarget)
 		}
@@ -323,7 +328,7 @@ func (board Board) generatePawnMoves(x, y int) string {
 
 	xTarget = x - 1
 	if board.isInsideLimit(xTarget, yTarget) {
-		targetCapture := board.Board[yTarget][xTarget]
+		targetCapture := board.board[yTarget][xTarget]
 		if targetCapture != "" && !targetCapture.AreSameColor(pawn) {
 			moves += generateTargetMovement(x, y, xTarget, yTarget)
 		}
@@ -333,7 +338,7 @@ func (board Board) generatePawnMoves(x, y int) string {
 }
 
 func (board Board) generateKnightMoves(x, y int) string {
-	knight := board.Board[y][x]
+	knight := board.board[y][x]
 	offsets := map[int][]int{
 		1:  {2, -2},
 		-1: {2, -2},
@@ -350,7 +355,7 @@ func (board Board) generateKnightMoves(x, y int) string {
 				continue
 			}
 
-			if board.Board[yTarget][xTarget].AreSameColor(knight) {
+			if board.board[yTarget][xTarget].AreSameColor(knight) {
 				continue
 			}
 
@@ -363,7 +368,7 @@ func (board Board) generateKnightMoves(x, y int) string {
 
 func (board Board) generateSlidingPiecesMoves(x, y int) string {
 	moves := ""
-	piece := board.Board[y][x]
+	piece := board.board[y][x]
 
 	directionsCount := generateDirectionsCount(piece)
 	for d := 0; d < directionsCount; d++ {
@@ -381,11 +386,11 @@ func (board Board) generateSlidingPiecesMoves(x, y int) string {
 
 func (board Board) lookForMovesAtDirection(x, xOffset, y, yOffset int) string {
 	moves := ""
-	piece := board.Board[y][x]
+	piece := board.board[y][x]
 	xTarget := x + xOffset
 	yTarget := y + yOffset
 	for board.isInsideLimit(xTarget, yTarget) {
-		targetPiece := board.Board[yTarget][xTarget]
+		targetPiece := board.board[yTarget][xTarget]
 
 		// direction blocked by friendly piece
 		if piece.AreSameColor(targetPiece) {
@@ -413,7 +418,7 @@ func (board Board) lookForMovesAtDirection(x, xOffset, y, yOffset int) string {
 }
 
 func (board Board) possibleCastles(x, y int) string {
-	king := board.Board[y][x]
+	king := board.board[y][x]
 	moves := ""
 	for _, v := range board.AvailableCastles {
 		side := string(v)
@@ -428,7 +433,7 @@ func (board Board) possibleCastles(x, y int) string {
 			offset = -1
 		}
 
-		if board.Board[y][x+offset] != "" || board.Board[y][x+offset*2] != "" {
+		if board.board[y][x+offset] != "" || board.board[y][x+offset*2] != "" {
 			continue
 		}
 
@@ -439,7 +444,7 @@ func (board Board) possibleCastles(x, y int) string {
 }
 
 func (board Board) possibleInPassant(x, y int) string {
-	pawn := board.Board[y][x]
+	pawn := board.board[y][x]
 	xOffsets := []int{-1, 1}
 	yOffset := -1
 	if pawn.IsColor("b") {
@@ -483,7 +488,7 @@ func (board *Board) haveLostCastle(x, y, xTarget, yTarget int) {
 		return
 	}
 
-	p := board.Board[y][x]
+	p := board.board[y][x]
 	if p == WKing || p == BKing || p == WRook || p == BRook {
 		possibleCastles := ""
 		for _, c := range board.AvailableCastles {
@@ -519,7 +524,7 @@ func (board *Board) haveLostCastle(x, y, xTarget, yTarget int) {
 }
 
 func (board *Board) move(x, y, xTarget, yTarget int, coronationPiece Piece) {
-	p := board.Board[y][x]
+	p := board.board[y][x]
 
 	board.Turn = "b"
 	if p.IsColor("b") {
@@ -548,13 +553,13 @@ func (board *Board) move(x, y, xTarget, yTarget int, coronationPiece Piece) {
 
 	isCastleMove := isCastleMovement(p, generateSquare(x, y), generateSquare(xTarget, yTarget))
 
-	board.Board[y][x] = ""
-	board.Board[yTarget][xTarget] = p
+	board.board[y][x] = ""
+	board.board[yTarget][xTarget] = p
 
 	if isCastleMove {
 		rX, rY, rXTarget, rYTarget := getCastleRookPosition(xTarget, yTarget)
-		board.Board[rYTarget][rXTarget] = board.Board[rY][rX]
-		board.Board[rY][rX] = ""
+		board.board[rYTarget][rXTarget] = board.board[rY][rX]
+		board.board[rY][rX] = ""
 	}
 }
 
@@ -587,30 +592,25 @@ func (board *Board) updateAvailableCastles() {
 		return
 	}
 
-	if board.Board[0][4] != BKing {
+	if board.GetPieceAt("e8") != BKing {
 		board.AvailableCastles = strings.Replace(board.AvailableCastles, "kq", "", 1)
 	}
-	if board.Board[7][4] != WKing {
+	if board.GetPieceAt("e1") != WKing {
 		board.AvailableCastles = strings.Replace(board.AvailableCastles, "KQ", "", 1)
 	}
 
-	if board.Board[0][0] != BRook {
+	if board.GetPieceAt("a8") != BRook {
 		board.AvailableCastles = strings.Replace(board.AvailableCastles, "q", "", 1)
 	}
-	if board.Board[7][0] != BRook {
+	if board.GetPieceAt("h8") != BRook {
 		board.AvailableCastles = strings.Replace(board.AvailableCastles, "k", "", 1)
 	}
-	if board.Board[0][7] != WRook {
+	if board.GetPieceAt("a1") != WRook {
 		board.AvailableCastles = strings.Replace(board.AvailableCastles, "Q", "", 1)
 	}
-	if board.Board[7][7] != WRook {
+	if board.GetPieceAt("h1") != WRook {
 		board.AvailableCastles = strings.Replace(board.AvailableCastles, "K", "", 1)
 	}
-}
-
-func (Board) parseToAlgebraicNotation(game string) string {
-
-	return ""
 }
 
 func (Board) isInsideLimit(x, y int) bool {
