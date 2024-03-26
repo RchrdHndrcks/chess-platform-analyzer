@@ -1,0 +1,43 @@
+.square {
+    width: 60px; 
+    height: 60px;
+    margin: 0; 
+    /*border: 1px solid #000;*/
+    display: flex;
+    justify-content: right;
+    align-items: end;
+    font-size: 15px;
+    padding-right: 2px;
+    color:#66280a;
+  }
+  
+  .board {
+    display: inline-block;
+    border: 20px solid #FFDEB887;
+  }
+  
+  .board-row {
+    content: "";
+    display: flex;
+    margin: 0; 
+  }
+  
+  .board-row:nth-child(odd) .square:nth-child(odd),
+  .board-row:nth-child(even) .square:nth-child(even) {
+    background-color: #fff; 
+  }
+  
+  .board-row:nth-child(odd) .square:nth-child(even),
+  .board-row:nth-child(even) .square:nth-child(odd) {
+    background-color: #ccc; 
+  }
+
+  .game{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin:0;
+    padding: 0px;
+    height: 100vh;
+    background-color:#66280a;
+  }
