@@ -1,3 +1,13 @@
+.piece {
+    position: absolute;
+    width: 85%; 
+    height: 85%;
+    z-index: 1;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+}
+
 .square {
     width: 60px; 
     height: 60px;
@@ -9,7 +19,8 @@
     font-size: 15px;
     padding-right: 2px;
     color:#66280a;
-  }
+    position: relative;
+}
   
   .board {
     display: inline-block;

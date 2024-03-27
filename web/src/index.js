@@ -6,12 +6,6 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render
 (
   <React.StrictMode>
-    <div className="container">
-      <div className="row">
-        <div className="col">
-          <Game />
-        </div>
-      </div>
-    </div>
+    <Game />
   </React.StrictMode>
 );
