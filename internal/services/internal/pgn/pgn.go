@@ -1,8 +1,9 @@
 package pgn
 
 import (
-	"chess-platform-analyzer/internal/chess"
 	"strings"
+
+	"chenizz/internal/services/internal/chess"
 )
 
 type (
